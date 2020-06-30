@@ -39,7 +39,7 @@ event init(t = 0) {
   u.t[bottom] = dirichlet(0.);
 }
 
-event animationU (t += 0.01; t <= 0.5) {
+event animationU (t += 0.00001; t <= 0.005) {
   view ();
   clear();
   squares ("u.x", spread = -1, linear = true, map = cool_warm );
@@ -48,7 +48,7 @@ event animationU (t += 0.01; t <= 0.5) {
   save ("HorizontalVelocity.mp4");
 }
 
-event logfile (t+= 0.01; t <= 0.5) {
+event logfile (t += 0.00001; t <= 0.005) {
   // compute the speed
   scalar speed[]; 
   foreach ()
@@ -60,6 +60,6 @@ event logfile (t+= 0.01; t <= 0.5) {
   // log to file
   FILE * fp = fopen("flow.log", "a");
   fprintf (fp, "%g %d %g %g %g %g %g\n", t, i, dt, s.sum, s.max, s.min, interpolate(speed, 0., 0.3));
-  // last one is speed at boundary
+  // last one is speed at interface
   fclose(fp);
 }
