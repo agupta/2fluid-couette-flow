@@ -2,7 +2,7 @@
 #include "two-phase.h"
 #include "view.h"
 
-#define MAX_LEVEL 7
+#define MAX_LEVEL 6
 
 int main () {
   init_grid(1 << MAX_LEVEL);
@@ -21,13 +21,12 @@ int main () {
   run();
 }
 
-
-
 event init(t = 0) {
-  fraction (f, 0.3-y);
-
   // flow out of the right -> into the left
   periodic(right);
+
+  // top 20% is oil
+  fraction (f, 0.3 - y);
 
   // initially velocity is 0 everywhere
   foreach () {
@@ -40,7 +39,7 @@ event init(t = 0) {
   u.t[bottom] = dirichlet(0.);
 }
 
-event animationU (t += 0.00002; t <= 0.002) {
+event animationU (t += 0.01; t <= 0.5) {
   view ();
   clear();
   squares ("u.x", spread = -1, linear = true, map = cool_warm );
@@ -49,16 +48,18 @@ event animationU (t += 0.00002; t <= 0.002) {
   save ("HorizontalVelocity.mp4");
 }
 
-event logfile (t+= 0.002; t <= 0.2) {
+event logfile (t+= 0.01; t <= 0.5) {
   // compute the speed
-  scalar speed[];
+  scalar speed[]; 
   foreach ()
+    // modulo floating point errors speed = u.x, but its cheating to assume that
     speed[] = norm(u); // l2
   // generate statistics
   stats s = statsf(speed);
-  
+
   // log to file
   FILE * fp = fopen("flow.log", "a");
-  fprintf (fp, "%g %d %g %g %g %g\n", t, i, dt, s.sum, s.max, s.min);
+  fprintf (fp, "%g %d %g %g %g %g %g\n", t, i, dt, s.sum, s.max, s.min, interpolate(speed, 0., 0.3));
+  // last one is speed at boundary
   fclose(fp);
 }
