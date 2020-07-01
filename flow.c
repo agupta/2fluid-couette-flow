@@ -1,8 +1,9 @@
 #include "navier-stokes/centered.h"
 #include "two-phase.h"
+#include "tension.h"
 #include "view.h"
 
-#define MAX_LEVEL 6
+#define MAX_LEVEL 5
 
 int main () {
   init_grid(1 << MAX_LEVEL);
@@ -17,6 +18,9 @@ int main () {
   // Fluid 2 is oil
   rho2 = 0.9;
   mu2 = 56.2;
+
+  // surface tension coefficient
+  f.sigma = 0.001;
 
   run();
 }
@@ -39,7 +43,7 @@ event init(t = 0) {
   u.t[bottom] = dirichlet(0.);
 }
 
-event animationU (t += 0.00001; t <= 0.005) {
+event animationU (t += 0.00004; t <= 0.005) {
   view ();
   clear();
   squares ("u.x", spread = -1, linear = true, map = cool_warm );
@@ -48,7 +52,7 @@ event animationU (t += 0.00001; t <= 0.005) {
   save ("HorizontalVelocity.mp4");
 }
 
-event logfile (t += 0.00001; t <= 0.005) {
+event logfile (t += 0.00004; t <= 0.005) {
   // compute the speed
   scalar speed[]; 
   foreach ()
