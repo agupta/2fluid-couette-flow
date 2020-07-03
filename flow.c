@@ -3,6 +3,8 @@
 
 #define MAX_LEVEL 5
 
+double sep;
+
 int main (int argc, char *argv[]) {
   init_grid(1 << MAX_LEVEL);
   origin(-0.5, -0.5);
@@ -13,8 +15,10 @@ int main (int argc, char *argv[]) {
   rho1 = 1.;
   mu1 = 1.;
 
-  rho2 = atof(argv[1]);
+  rho2 = 1.;
   mu2 = atof(argv[2]);
+
+  sep = atof(argv[1]);
 
   run();
 }
@@ -24,7 +28,7 @@ event init(t = 0) {
   periodic(right);
 
   // top 20% is oil
-  fraction (f, 0.3 - y);
+  fraction (f, sep - y);
 
   // initially velocity is 0 everywhere
   foreach () {
@@ -64,6 +68,6 @@ event init(t = 0) {
 
 event logfile (t = 1e+8) {
   FILE * fp = fopen("flow.log", "a");
-  fprintf (fp, "%g %g %g\n", rho2, mu2, interpolate(u.x, 0., 0.3));
+  fprintf (fp, "%g %g %g\n", sep, mu2, interpolate(u.x, 0., sep));
   fclose(fp);
 }
