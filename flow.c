@@ -1,7 +1,7 @@
 #include "navier-stokes/centered.h"
 #include "two-phase.h"
 
-#define MAX_LEVEL 6
+#define MAX_LEVEL 7
 
 double sep;
 
