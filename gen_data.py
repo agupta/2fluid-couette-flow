@@ -1,14 +1,8 @@
-import os;
-for sep in range(-50, 50): # -0.50 to 0.49
-  for mu in range(1, 201):
-    os.system(f"./out/flow {sep/100} {mu/100}")
+import numpy as np
+from tqdm import tqdm
+import os
 
-"""
-sep = 30
-for mu in range (1, 300):
-  os.system(f"./out/flow {sep/100} {mu/100}")
-
-for mu in range(1, 1001):
-  #print(f"rho: {rho/10} mu: {mu/10}")
-  os.system(f"./out/flow {sep/100} {mu/10}")
-"""
+for sep in tqdm(np.linspace(0.01, 0.99, num=50)):
+    for mu_r in np.geomspace(0.01, 1000, num=50):
+        os.system(f"./out/flow {sep} {mu_r} >/dev/null 2>&1")
+        # >/dev/... suppresses output

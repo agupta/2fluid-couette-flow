@@ -1,24 +1,27 @@
 #include "navier-stokes/centered.h"
 #include "two-phase.h"
 
-#define MAX_LEVEL 5
+#define MAX_LEVEL 6
 
 double sep;
 
+// e.g.
+// $ flow 0.4 50
+// Top 40% is occupied by a fluid with viscosity 50 times that of the bottom fluid.
+
 int main (int argc, char *argv[]) {
   init_grid(1 << MAX_LEVEL);
-  origin(-0.5, -0.5);
 
-  // set up fluids, doing this in init doesn't work
+  sep = atof(argv[1]); // where the interface is
 
-  // Fluid 1 is water
+  // Set up fluids. (doing this in init doesn't work)
+
   rho1 = 1.;
   mu1 = 1.;
 
+  // Top fluid with parametrised viscosity
   rho2 = 1.;
   mu2 = atof(argv[2]);
-
-  sep = atof(argv[1]);
 
   run();
 }
@@ -27,8 +30,8 @@ event init(t = 0) {
   // flow out of the right -> into the left
   periodic(right);
 
-  // top 20% is oil
-  fraction (f, sep - y);
+  // the top is the 
+  fraction (f, y-sep);
 
   // initially velocity is 0 everywhere
   foreach () {
@@ -66,7 +69,7 @@ event init(t = 0) {
 //   fclose(fp);
 // }
 
-event logfile (t = 1e+8) {
+event logfile (t = 1e+8) { // large t should approximate steady state solution.
   FILE * fp = fopen("flow.log", "a");
   fprintf (fp, "%g %g %g\n", sep, mu2, interpolate(u.x, 0., sep));
   fclose(fp);
