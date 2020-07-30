@@ -30,7 +30,7 @@ event init(t = 0) {
   // flow out of the right -> into the left
   periodic(right);
 
-  // the top is the 
+  // fluid 2 on top
   fraction (f, y-sep);
 
   // initially velocity is 0 everywhere
